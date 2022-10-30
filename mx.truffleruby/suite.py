@@ -124,6 +124,16 @@ suite = {
 
         # ------------- Projects -------------
 
+        "org.yarp": {
+            "dir": "src/yarp",
+            "sourceDirs": ["java"],
+            "jniHeaders": True,
+            "jacoco": "include",
+            "javaCompliance": "11+",
+            "workingSets": "TruffleRuby",
+            "license": ["MIT"],
+        },
+
         "org.truffleruby.annotations": {
             "dir": "src/annotations",
             "sourceDirs": ["java"],
@@ -131,7 +141,6 @@ suite = {
             "javaCompliance": "11+",
             "checkstyle": "org.truffleruby",
             "workingSets": "TruffleRuby",
-            "checkPackagePrefix": "false",
             "license": ["EPL-2.0"],
         },
 
@@ -194,6 +203,19 @@ suite = {
             "ldflags": ["-pthread"],
         },
 
+        "org.yarp.libyarp": {
+            "dir": "src/main/c/yarp",
+            "native": "shared_lib",
+            "deliverable": "yarp",
+            "buildDependencies": [
+                "org.yarp", # for the generated JNI header file
+            ],
+            "use_jdk_headers": True, # the generated JNI header includes jni.h
+            "cflags": ["-g", "-Wall", "-Werror", "-pthread"],
+            "ldflags": ["-pthread"],
+            "description": "YARP + JNI bindings as a single lib"
+        },
+
         "org.truffleruby": {
             "dir": "src/main",
             "sourceDirs": ["java"],
@@ -205,6 +227,7 @@ suite = {
                 "jdk.unsupported", # sun.misc.Signal
             ],
             "dependencies": [
+                "truffleruby:YARP",
                 "truffleruby:TRUFFLERUBY-ANNOTATIONS",
                 "truffleruby:TRUFFLERUBY-SHARED",
                 "truffle:TRUFFLE_API",
@@ -228,7 +251,7 @@ suite = {
                 "EPL-2.0",          # JRuby (we're choosing EPL out of EPL,GPL,LGPL)
                 "BSD-new",          # Rubinius
                 "BSD-simplified",   # MRI
-                "MIT",              # Joni, JCodings
+                "MIT",              # Joni, JCodings, YARP
             ],
         },
 
@@ -342,6 +365,14 @@ suite = {
     "distributions": {
 
         # ------------- Distributions -------------
+
+        "YARP": {
+            "dependencies": [
+                "org.yarp"
+            ],
+            "description": "YARP Java classes",
+            "license": ["MIT"],
+        },
 
         "TRUFFLERUBY-ANNOTATIONS": {
             "dependencies": [
@@ -469,6 +500,7 @@ suite = {
                     "file:lib/mri",
                     "file:lib/patches",
                     "file:lib/truffle",
+                    "dependency:org.yarp.libyarp",
                 ],
                 "lib/cext/": [
                     "file:lib/cext/*.rb",

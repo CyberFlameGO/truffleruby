@@ -1,3 +1,6 @@
+src/main/c/yarp/src/yarp/
+src/yarp/
+
 # macOS
 .DS_Store
 Info.plist
